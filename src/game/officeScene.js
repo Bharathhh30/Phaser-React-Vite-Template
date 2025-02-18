@@ -9,22 +9,33 @@ export class OfficeScene extends Phaser.Scene{
     preload (){
         this.load.tilemapTiledJSON('office','src/assets/hello.json')
         this.load.image('floors','src/assets/floors.png')
-        // this.load.image('furniture','src/assets/furniture.png')
-        // this.load.image('gather','src/assets/gather.png')
+        this.load.image('furniture','src/assets/furniture.png')
+        this.load.image('gather','src/assets/gather.png')
         this.load.spritesheet('character','src/assets/Flora.png',{frameWidth: 32, frameHeight: 32})
     }
 
     create () {
         const map = this.make.tilemap({key: 'office'})
         const tileset1 = map.addTilesetImage('test-tiles','floors')
-        // const tileset2 = map.addTilesetImage('furniture','furniture')
-        // const tileset3 = map.addTilesetImage('gahter','gather')
+        const tileset2 = map.addTilesetImage('walls','furniture')
+        const tileset3 = map.addTilesetImage('tables','gather')
 
-        const floorLayer = map.createLayer('toplayer', tileset1, 0, 0);
+        const floorLayer = map.createLayer('firstlayer', tileset1, 0, 0);
+        const walllayer = map.createLayer('secondlayer', tileset2, 0, 0);
+        const tablelayer = map.createLayer('thirdlayer', tileset3, 0, 0);
         // this didnot work as we defined the layer in a different way ig (ignore rn)
         // floorLayer.setCollisionByProperty({ collides: true });
         // adding sprite
         this.player = this.physics.add.sprite(400,300,'character')
+
+
+        // setting collision layers
+        walllayer.setCollisionByProperty({ collides: true });
+        tablelayer.setCollisionByProperty({ collides: true });
+        
+        // also add physics collider
+        this.physics.add.collider(this.player, walllayer);
+        this.physics.add.collider(this.player, tablelayer);
 
         // camera following the sprite
         this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
